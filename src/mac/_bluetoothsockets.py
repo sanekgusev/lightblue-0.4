@@ -645,11 +645,7 @@ class _BluetoothSocket(object):
         if not stopwaiting():
             if self.__timeout == 0:
                 # in non-blocking mode (immediate timeout)
-                # push event loop to really be sure there is no data available
-                _macutil.looponce()
-                if not stopwaiting():
-                    # trying to perform operation now would block
-                    raise _socket.error(errno.EAGAIN, os.strerror(errno.EAGAIN))
+                raise _socket.timeout(timeoutmsg)
             else:
                 # block and wait until we get data, or time out
                 if not _macutil.waituntil(stopwaiting, self.__timeout):
